@@ -7,6 +7,13 @@ var cookie = require('cookie-cutter');
 
 // platform dependent functionality
 var mixins = {
+	ios: {
+		appMeta: 'apple-itunes-app',
+		iconRels: ['apple-touch-icon-precomposed', 'apple-touch-icon'],
+		getStoreLink: function() {
+			return 'https://itunes.apple.com/' + this.options.appStoreLanguage + '/app/id' + this.appId;
+		}
+	},
 	android: {
 		appMeta: 'google-play-app',
 		iconRels: ['android-touch-icon', 'apple-touch-icon-precomposed', 'apple-touch-icon'],
@@ -21,11 +28,14 @@ var SmartBanner = function(options) {
 	this.options = extend({}, {
 		daysHidden: 15,
 		daysReminder: 90,
+		appStoreLanguage: 'us', // Language code for App Store
 		button: 'OPEN', // Text for the install button
 		store: {
+			ios: 'On the App Store',
 			android: 'In Google Play'
 		},
 		price: {
+			ios: 'FREE',
 			android: 'FREE'
 		},
 		force: false // put platform type (ios, android, etc.) here for emulation
@@ -33,11 +43,17 @@ var SmartBanner = function(options) {
 
 	if (this.options.force) {
 		this.type = this.options.force;
+	} else if (userAgent.match(/iPad|iPhone|iPod/i) !== null) {
+		if (userAgent.match(/Safari/i) !== null &&
+				(userAgent.match(/CriOS/i) !== null ||
+				Number(userAgent.substr(userAgent.indexOf('OS ') + 3, 3).replace('_', '.')) < 6)) {
+			this.type = 'ios';
+		} // Check webview and native smart banner support (iOS 6+)
 	} else if (userAgent.match(/Android/i) !== null) {
 		this.type = 'android';
 	}
 
-	// Don't show banner if device isn't Android, website is loaded in app, user dismissed banner, or we have no app id in meta
+	// Don't show banner if device isn't iOS or Android, website is loaded in app, user dismissed banner, or we have no app id in meta
 	if (!this.type
 		|| navigator.standalone
 		|| cookie.get('smartbanner-closed')
@@ -88,11 +104,11 @@ SmartBanner.prototype = {
 
 		//there isn’t neccessary a body
 		if (doc.body) {
-			doc.body.insertBefore(sb, document.body.firstChild);
+			doc.body.appendChild(sb);
 		}
 		else if (doc) {
 			doc.addEventListener('DOMContentLoaded', function(){
-				doc.body.insertBefore(sb, document.body.firstChild);
+				doc.body.appendChild(sb);
 			});
 		}
 
