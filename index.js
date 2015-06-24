@@ -105,10 +105,12 @@ SmartBanner.prototype = {
 		//there isn’t neccessary a body
 		if (doc.querySelector('.body-wrapper')) {
 			doc.querySelector('.body-wrapper').appendChild(sb);
+			doc.getElementById('header').classList.add('smart-banner');
 		}
 		else if (doc) {
 			doc.addEventListener('DOMContentLoaded', function(){
 				doc.querySelector('.body-wrapper').appendChild(sb);
+				doc.getElementById('header').classList.add('smart-banner');
 			});
 		}
 
@@ -124,6 +126,7 @@ SmartBanner.prototype = {
 	},
 	close: function() {
 		this.hide();
+		doc.getElementById('header').classList.remove('smart-banner');
 		cookie.set('smartbanner-closed', 'true', {
 			path: '/',
 			expires: +new Date() + this.options.daysHidden * 1000 * 60 * 60 * 24
