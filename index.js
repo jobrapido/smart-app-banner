@@ -7,25 +7,11 @@ var cookie = require('cookie-cutter');
 
 // platform dependent functionality
 var mixins = {
-	ios: {
-		appMeta: 'apple-itunes-app',
-		iconRels: ['apple-touch-icon-precomposed', 'apple-touch-icon'],
-		getStoreLink: function() {
-			return 'https://itunes.apple.com/' + this.options.appStoreLanguage + '/app/id' + this.appId;
-		}
-	},
 	android: {
 		appMeta: 'google-play-app',
 		iconRels: ['android-touch-icon', 'apple-touch-icon-precomposed', 'apple-touch-icon'],
 		getStoreLink: function() {
 			return 'http://play.google.com/store/apps/details?id=' + this.appId;
-		}
-	},
-	windows: {
-		appMeta: 'msApplication-ID',
-		iconRels: ['windows-touch-icon', 'apple-touch-icon-precomposed', 'apple-touch-icon'],
-		getStoreLink: function() {
-			return 'http://www.windowsphone.com/s?appid=' + this.appId;
 		}
 	}
 };
@@ -35,38 +21,23 @@ var SmartBanner = function(options) {
 	this.options = extend({}, {
 		daysHidden: 15,
 		daysReminder: 90,
-		appStoreLanguage: 'us', // Language code for App Store
 		button: 'OPEN', // Text for the install button
 		store: {
-			ios: 'On the App Store',
-			android: 'In Google Play',
-			windows: 'In the Windows Store'
+			android: 'In Google Play'
 		},
 		price: {
-			ios: 'FREE',
-			android: 'FREE',
-			windows: 'FREE'
+			android: 'FREE'
 		},
 		force: false // put platform type (ios, android, etc.) here for emulation
 	}, options || {});
 
 	if (this.options.force) {
 		this.type = this.options.force;
-	}
-	else if (userAgent.match(/Windows Phone/i) != null && userAgent.match(/Touch/i) !== null) {
-		this.type = 'windows';
- 	}
- 	else if (userAgent.match(/iPad|iPhone|iPod/i) !== null) {
-		if (userAgent.match(/Safari/i) !== null &&
-				(userAgent.match(/CriOS/i) !== null ||
-				Number(userAgent.substr(userAgent.indexOf('OS ') + 3, 3).replace('_', '.')) < 6)) {
-			this.type = 'ios';
-		} // Check webview and native smart banner support (iOS 6+)
 	} else if (userAgent.match(/Android/i) !== null) {
 		this.type = 'android';
 	}
 
-	// Don't show banner if device isn't iOS or Android, website is loaded in app, user dismissed banner, or we have no app id in meta
+	// Don't show banner if device isn't Android, website is loaded in app, user dismissed banner, or we have no app id in meta
 	if (!this.type
 		|| navigator.standalone
 		|| cookie.get('smartbanner-closed')
