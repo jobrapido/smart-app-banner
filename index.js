@@ -88,11 +88,11 @@ SmartBanner.prototype = {
 
 		//there isn’t neccessary a body
 		if (doc.body) {
-			doc.body.appendChild(sb);
+			doc.body.insertBefore(sb, document.body.firstChild);
 		}
 		else if (doc) {
 			doc.addEventListener('DOMContentLoaded', function(){
-				doc.body.appendChild(sb);
+				doc.body.insertBefore(sb, document.body.firstChild);
 			});
 		}
 
