@@ -103,12 +103,12 @@ SmartBanner.prototype = {
 						'</div>';
 
 		//there isn’t neccessary a body
-		if (doc.body) {
-			doc.body.appendChild(sb);
+		if (doc.querySelector('.body-wrapper')) {
+			doc.querySelector('.body-wrapper').appendChild(sb);
 		}
 		else if (doc) {
 			doc.addEventListener('DOMContentLoaded', function(){
-				doc.body.appendChild(sb);
+				doc.querySelector('.body-wrapper').appendChild(sb);
 			});
 		}
 
