@@ -11,14 +11,14 @@ var mixins = {
 		appMeta: 'apple-itunes-app',
 		iconRels: ['apple-touch-icon-precomposed', 'apple-touch-icon'],
 		getStoreLink: function() {
-			return 'http://ad.apps.fm/I2h9qbxltNDOYmPrrSXz8fE7og6fuV2oOMeOQdRqrE2SPQBHhExIWwzuD7eqeJWwgxhaLt_paOA6c2lRsaT2r1W32-fOIBNcLisW-m9fmry-GzGbWNJZD4k5n7kqqa-fZyrdjslX9WPorS1_YHqe-Q';
+			return this.options.url.ios;
 		}
 	},
 	android: {
 		appMeta: 'google-play-app',
 		iconRels: ['android-touch-icon', 'apple-touch-icon-precomposed', 'apple-touch-icon'],
 		getStoreLink: function() {
-			return 'http://ad.apps.fm/OuNoNKU-0saUX-vEYAETxl5KLoEjTszcQMJsV6-2VnHFDLXitVHB6BlL95nuoNYf6udzDSABoJV_3IFGRxpBDO_yjDAbzt61_o2MeG5wSza-GzGbWNJZD4k5n7kqqa-fTROElKFd4MhEFG6bO9rtRg';
+			return this.options.url.android;
 		}
 	}
 };
