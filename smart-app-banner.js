@@ -1,10 +1,251 @@
-(function(l){"object"===typeof exports&&"undefined"!==typeof module?module.exports=l():"function"===typeof define&&define.amd?define([],l):("undefined"!==typeof window?window:"undefined"!==typeof global?global:"undefined"!==typeof self?self:this).SmartBanner=l()})(function(){return function d(g,f,e){function b(c,m){if(!f[c]){if(!g[c]){var k="function"==typeof require&&require;if(!m&&k)return k(c,!0);if(a)return a(c,!0);k=Error("Cannot find module '"+c+"'");throw k.code="MODULE_NOT_FOUND",k;}k=f[c]=
-{exports:{}};g[c][0].call(k.exports,function(a){var e=g[c][1][a];return b(e?e:a)},k,k.exports,d,g,f,e)}return f[c].exports}for(var a="function"==typeof require&&require,c=0;c<e.length;c++)b(e[c]);return b}({1:[function(d,g,f){var e=d("xtend/mutable"),b=d("component-query"),a=d("get-doc"),c=a&&a.documentElement,h=d("cookie-cutter"),m={ios:{appMeta:"apple-itunes-app",iconRels:["apple-touch-icon-precomposed","apple-touch-icon"],getStoreLink:function(){return this.options.url.ios}},android:{appMeta:"google-play-app",
-iconRels:["android-touch-icon","apple-touch-icon-precomposed","apple-touch-icon"],getStoreLink:function(){return this.options.url.android}}};d=function(a){var b=navigator.userAgent;this.options=e({},{daysHidden:15,daysReminder:90,appStoreLanguage:"us",button:"OPEN",store:{ios:"On the App Store",android:"In Google Play"},price:{ios:"FREE",android:"FREE"},force:!1},a||{});this.options.force?this.type=this.options.force:null!==b.match(/iPad|iPhone|iPod/i)?null!==b.match(/Safari/i)&&(null!==b.match(/CriOS/i)||
-6>Number(b.substr(b.indexOf("OS ")+3,3).replace("_",".")))&&(this.type="ios"):null!==b.match(/Android/i)&&(this.type="android");!this.type||navigator.standalone||h.get("smartbanner-closed")||h.get("smartbanner-installed")||(e(this,m[this.type]),this.parseAppId()&&(this.create(),this.show()))};d.prototype={constructor:d,create:function(){for(var c=this.getStoreLink(),e=this.options.price[this.type]+" - "+this.options.store[this.type],d,f=0;f<this.iconRels.length;f++){var g=b('link[rel="'+this.iconRels[f]+
-'"]');if(g){d=g.getAttribute("href");break}}var h=a.createElement("div");h.className="smartbanner smartbanner-"+this.type;h.innerHTML='<div class="smartbanner-container"><a href="javascript:void(0);" class="smartbanner-close">&times;</a><span class="smartbanner-icon" style="background-image: url('+d+')"></span><div class="smartbanner-info"><div class="smartbanner-title">'+this.options.title+"</div><div>"+this.options.author+"</div><span>"+e+'</span></div><a href="'+c+'" class="smartbanner-button"><span class="smartbanner-button-text">'+
-this.options.button+"</span></a></div>";a.querySelector(".body-wrapper")?(a.querySelector(".body-wrapper").appendChild(h),a.body.classList.add("smart-banner")):a&&a.addEventListener("DOMContentLoaded",function(){a.querySelector(".body-wrapper").appendChild(h);a.body.classList.add("smart-banner")});b(".smartbanner-button",h).addEventListener("click",this.install.bind(this),!1);b(".smartbanner-close",h).addEventListener("click",this.close.bind(this),!1)},hide:function(){c.classList.remove("smartbanner-show")},
-show:function(){c.classList.add("smartbanner-show")},close:function(){this.hide();a.body.classList.remove("smart-banner");h.set("smartbanner-closed","true",{path:"/",expires:+new Date+864E5*this.options.daysHidden})},install:function(){this.hide();h.set("smartbanner-installed","true",{path:"/",expires:+new Date+864E5*this.options.daysReminder})},parseAppId:function(){var a=b('meta[name="'+this.appMeta+'"]');if(a)return this.appId="windows"===this.type?a.getAttribute("content"):/app-id=([^\s,]+)/.exec(a.getAttribute("content"))[1]}};
-g.exports=d},{"component-query":2,"cookie-cutter":3,"get-doc":4,"xtend/mutable":6}],2:[function(d,g,f){function e(b,a){return a.querySelector(b)}f=g.exports=function(b,a){a=a||document;return e(b,a)};f.all=function(b,a){a=a||document;return a.querySelectorAll(b)};f.engine=function(b){if(!b.one)throw Error(".one callback required");if(!b.all)throw Error(".all callback required");e=b.one;f.all=b.all;return f}},{}],3:[function(d,g,f){f=g.exports=function(e){e||(e={});"string"===typeof e&&(e={cookie:e});
-void 0===e.cookie&&(e.cookie="");return{get:function(b){for(var a=e.cookie.split(/;\s*/),c=0;c<a.length;c++){var d=a[c].split("=");if(unescape(d[0])===b)return unescape(d[1])}},set:function(b,a,c){c||(c={});b=escape(b)+"="+escape(a);c.expires&&(b+="; expires="+c.expires);c.path&&(b+="; path="+escape(c.path));return e.cookie=b}}};"undefined"!==typeof document&&(d=f(document),f.get=d.get,f.set=d.set)},{}],4:[function(d,g,f){d=d("has-dom");g.exports=d()?document:null},{"has-dom":5}],5:[function(d,g,
-f){g.exports=function(){return"undefined"!==typeof window&&"undefined"!==typeof document&&"function"===typeof document.createElement}},{}],6:[function(d,g,f){g.exports=function(d){for(var b=1;b<arguments.length;b++){var a=arguments[b],c;for(c in a)a.hasOwnProperty(c)&&(d[c]=a[c])}return d}},{}]},{},[1])(1)});
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var extend = require('xtend/mutable');
+var q = require('component-query');
+var doc = require('get-doc');
+var root = doc && doc.documentElement;
+var cookie = require('cookie-cutter');
+
+
+// platform dependent functionality
+var mixins = {
+	ios: {
+		appMeta: 'apple-itunes-app',
+		iconRels: ['apple-touch-icon-precomposed', 'apple-touch-icon'],
+		getStoreLink: function() {
+			return this.options.url.ios;
+		}
+	},
+	android: {
+		appMeta: 'google-play-app',
+		iconRels: ['android-touch-icon', 'apple-touch-icon-precomposed', 'apple-touch-icon'],
+		getStoreLink: function() {
+			return this.options.url.android;
+		}
+	}
+};
+
+var SmartBanner = function(options) {
+	var userAgent = navigator.userAgent;
+	this.options = extend({}, {
+		daysHidden: 15,
+		daysReminder: 90,
+		appStoreLanguage: 'us', // Language code for App Store
+		button: 'OPEN', // Text for the install button
+		store: {
+			ios: 'On the App Store',
+			android: 'In Google Play'
+		},
+		price: {
+			ios: 'FREE',
+			android: 'FREE'
+		},
+		force: false // put platform type (ios, android, etc.) here for emulation
+	}, options || {});
+
+	if (this.options.force) {
+		this.type = this.options.force;
+	} else if (userAgent.match(/iPad|iPhone|iPod/i) !== null) {
+		if (userAgent.match(/Safari/i) !== null &&
+				(userAgent.match(/CriOS/i) !== null ||
+				Number(userAgent.substr(userAgent.indexOf('OS ') + 3, 3).replace('_', '.')) < 6)) {
+			this.type = 'ios';
+		} // Check webview and native smart banner support (iOS 6+)
+	} else if (userAgent.match(/Android/i) !== null) {
+		this.type = 'android';
+	}
+
+	// Don't show banner if device isn't iOS or Android, website is loaded in app, user dismissed banner, or we have no app id in meta
+	if (!this.type
+		|| navigator.standalone
+		|| cookie.get('smartbanner-closed')
+		|| cookie.get('smartbanner-installed')) {
+		return;
+	}
+
+	extend(this, mixins[this.type]);
+
+	if (!this.parseAppId()) {
+		return;
+	}
+
+	this.create();
+	this.show();
+};
+
+SmartBanner.prototype = {
+	constructor: SmartBanner,
+
+	create: function() {
+		var link = this.getStoreLink();
+		var inStore = this.options.price[this.type] + ' - ' + this.options.store[this.type];
+		var icon;
+		for (var i = 0; i < this.iconRels.length; i++) {
+			var rel = q('link[rel="'+this.iconRels[i]+'"]');
+			if (rel) {
+				icon = rel.getAttribute('href');
+				break;
+			}
+		}
+
+		var sb = doc.createElement('div');
+		sb.className = 'smartbanner smartbanner-' + this.type;
+
+		sb.innerHTML = '<div class="smartbanner-container">' +
+							'<a href="javascript:void(0);" class="smartbanner-close">&times;</a>' +
+							'<span class="smartbanner-icon" style="background-image: url('+icon+')"></span>' +
+							'<div class="smartbanner-info">' +
+								'<div class="smartbanner-title">'+this.options.title+'</div>' +
+								'<div>'+this.options.author+'</div>' +
+								'<span>'+inStore+'</span>' +
+							'</div>' +
+							'<a href="'+link+'" class="smartbanner-button">' +
+								'<span class="smartbanner-button-text">'+this.options.button+'</span>' +
+							'</a>' +
+						'</div>';
+
+		//there isn’t neccessary a body
+		if (doc.querySelector('.body-wrapper')) {
+			doc.querySelector('.body-wrapper').appendChild(sb);
+			doc.body.classList.add('smart-banner');
+		}
+		else if (doc) {
+			doc.addEventListener('DOMContentLoaded', function(){
+				doc.querySelector('.body-wrapper').appendChild(sb);
+				doc.body.classList.add('smart-banner');
+			});
+		}
+
+		q('.smartbanner-button', sb).addEventListener('click', this.install.bind(this), false);
+		q('.smartbanner-close', sb).addEventListener('click', this.close.bind(this), false);
+
+	},
+	hide: function() {
+		root.classList.remove('smartbanner-show');
+	},
+	show: function() {
+		root.classList.add('smartbanner-show');
+	},
+	close: function() {
+		this.hide();
+		doc.body.classList.remove('smart-banner');
+		cookie.set('smartbanner-closed', 'true', {
+			path: '/',
+			expires: +new Date() + this.options.daysHidden * 1000 * 60 * 60 * 24
+		});
+	},
+	install: function() {
+		this.hide();
+		cookie.set('smartbanner-installed', 'true', {
+			path: '/',
+			expires: +new Date() + this.options.daysReminder * 1000 * 60 * 60 * 24
+		});
+	},
+	parseAppId: function() {
+		var meta = q('meta[name="' + this.appMeta + '"]');
+		if (!meta) {
+			return;
+		}
+
+		if (this.type === 'windows') {
+			this.appId = meta.getAttribute('content');
+		} else {
+			this.appId = /app-id=([^\s,]+)/.exec(meta.getAttribute('content'))[1];
+		}
+
+		return this.appId;
+	}
+};
+
+module.exports = SmartBanner;
+
+},{"component-query":2,"cookie-cutter":3,"get-doc":4,"xtend/mutable":6}],2:[function(require,module,exports){
+function one(selector, el) {
+  return el.querySelector(selector);
+}
+
+exports = module.exports = function(selector, el){
+  el = el || document;
+  return one(selector, el);
+};
+
+exports.all = function(selector, el){
+  el = el || document;
+  return el.querySelectorAll(selector);
+};
+
+exports.engine = function(obj){
+  if (!obj.one) throw new Error('.one callback required');
+  if (!obj.all) throw new Error('.all callback required');
+  one = obj.one;
+  exports.all = obj.all;
+  return exports;
+};
+
+},{}],3:[function(require,module,exports){
+var exports = module.exports = function (doc) {
+    if (!doc) doc = {};
+    if (typeof doc === 'string') doc = { cookie: doc };
+    if (doc.cookie === undefined) doc.cookie = '';
+    
+    var self = {};
+    self.get = function (key) {
+        var splat = doc.cookie.split(/;\s*/);
+        for (var i = 0; i < splat.length; i++) {
+            var ps = splat[i].split('=');
+            var k = unescape(ps[0]);
+            if (k === key) return unescape(ps[1]);
+        }
+        return undefined;
+    };
+    
+    self.set = function (key, value, opts) {
+        if (!opts) opts = {};
+        var s = escape(key) + '=' + escape(value);
+        if (opts.expires) s += '; expires=' + opts.expires;
+        if (opts.path) s += '; path=' + escape(opts.path);
+        doc.cookie = s;
+        return s;
+    };
+    return self;
+};
+
+if (typeof document !== 'undefined') {
+    var cookie = exports(document);
+    exports.get = cookie.get;
+    exports.set = cookie.set;
+}
+
+},{}],4:[function(require,module,exports){
+/**
+ * @module  get-doc
+ */
+
+var hasDom = require('has-dom');
+
+module.exports = hasDom() ? document : null;
+},{"has-dom":5}],5:[function(require,module,exports){
+'use strict';
+module.exports = function () {
+	return typeof window !== 'undefined'
+		&& typeof document !== 'undefined'
+		&& typeof document.createElement === 'function';
+};
+
+},{}],6:[function(require,module,exports){
+module.exports = extend
+
+function extend(target) {
+    for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i]
+
+        for (var key in source) {
+            if (source.hasOwnProperty(key)) {
+                target[key] = source[key]
+            }
+        }
+    }
+
+    return target
+}
+
+},{}]},{},[1]);
