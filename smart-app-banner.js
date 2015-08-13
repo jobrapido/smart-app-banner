@@ -45,7 +45,7 @@ var SmartBanner = function(options) {
 	if (this.options.force) {
 		this.type = this.options.force;
 	} else if (userAgent.match(/iPad|iPhone|iPod/i) !== null) {
-		if (userAgent.match(/Safari/i) !== null &&
+		if (userAgent.match(/Safari/i) !== null ||
 				(userAgent.match(/CriOS/i) !== null ||
 				Number(userAgent.substr(userAgent.indexOf('OS ') + 3, 3).replace('_', '.')) < 6)) {
 			this.type = 'ios';
