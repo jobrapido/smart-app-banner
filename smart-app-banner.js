@@ -9,7 +9,7 @@ var cookie = require('cookie-cutter');
 // platform dependent functionality
 var mixins = {
 	ios: {
-		appMeta: 'apple-itunes-app',
+		appMeta: 'apple-itunes-app-meta',
 		iconRels: ['apple-touch-icon-precomposed', 'apple-touch-icon'],
 		getStoreLink: function() {
 			return this.options.url.ios;
@@ -186,7 +186,7 @@ var exports = module.exports = function (doc) {
     if (!doc) doc = {};
     if (typeof doc === 'string') doc = { cookie: doc };
     if (doc.cookie === undefined) doc.cookie = '';
-    
+
     var self = {};
     self.get = function (key) {
         var splat = doc.cookie.split(/;\s*/);
@@ -197,7 +197,7 @@ var exports = module.exports = function (doc) {
         }
         return undefined;
     };
-    
+
     self.set = function (key, value, opts) {
         if (!opts) opts = {};
         var s = escape(key) + '=' + escape(value);
