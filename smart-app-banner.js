@@ -128,17 +128,22 @@ SmartBanner.prototype = {
 	close: function() {
 		this.hide();
 		doc.body.classList.remove('smart-banner');
-		cookie.set('smartbanner-closed', 'true', {
-			path: '/',
-			expires: +new Date() + this.options.daysHidden * 1000 * 60 * 60 * 24
-		});
+		if(this.options.daysHidden > 0) {
+			cookie.set('smartbanner-closed', 'true', {
+				path: '/',
+				expires: +new Date() + this.options.daysHidden * 1000 * 60 * 60 * 24
+			});
+		}
 	},
 	install: function() {
 		this.hide();
-		cookie.set('smartbanner-installed', 'true', {
-			path: '/',
-			expires: +new Date() + this.options.daysReminder * 1000 * 60 * 60 * 24
-		});
+		doc.body.classList.remove('smart-banner');
+		if(this.options.daysReminder > 0) {
+			cookie.set('smartbanner-installed', 'true', {
+				path: '/',
+				expires: +new Date() + this.options.daysReminder * 1000 * 60 * 60 * 24
+			});
+		}
 	},
 	parseAppId: function() {
 		var meta = q('meta[name="' + this.appMeta + '"]');
