@@ -38,7 +38,7 @@ Based on 'jQuery Smart Banner' by Arnold Daniels <arnold@jasny.net> https://gith
       new SmartBanner({
           daysHidden: 15,   // days to hide banner after close button is clicked (defaults to 15)
           daysReminder: 90, // days to hide banner after "VIEW" button is clicked (defaults to 90)
-          appStoreLanguage: 'us', // language code for the App Store (defaults to us)
+          appStoreLanguage: 'us', // language code for the App Store (defaults to user's browser language)
           title: 'MyPage',
           author: 'MyCompany LLC',
           button: 'VIEW',
@@ -52,9 +52,24 @@ Based on 'jQuery Smart Banner' by Arnold Daniels <arnold@jasny.net> https://gith
               android: 'FREE',
               windows: 'FREE'
           }
+          // , theme: '' // put platform type ('ios', 'android', etc.) here to force single theme on all device
+          // , icon: '' // full path to icon image if not using website icon image
           // , force: 'ios' // Uncomment for platform emulation
       });
     </script>
   </body>
 </html>
 ```
+
+## Development
+
+The following commands are available for compiling the project:
+
+| Command | Result |
+| ------- | ------ |
+| `npm install` | Installs the required dependencies |
+| `npm run build` | Builds the application JavaScript. |
+
+## See also
+
+* [smartappbanner.js](https://github.com/ain/smartbanner.js) an alternative smart app banner.
