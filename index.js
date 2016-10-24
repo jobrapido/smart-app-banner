@@ -3,58 +3,76 @@ var q = require('component-query');
 var doc = require('get-doc');
 var root = doc && doc.documentElement;
 var cookie = require('cookie-cutter');
+var ua = require('ua-parser-js');
 
+// IE < 11 doesn't support navigator language property.
+var userLangAttribute = navigator.language || navigator.userLanguage || navigator.browserLanguage;
+var userLang = userLangAttribute.slice(-2) || 'us';
 
 // platform dependent functionality
 var mixins = {
 	ios: {
-		appMeta: 'apple-itunes-app-meta',
+		appMeta: 'apple-itunes-app',
 		iconRels: ['apple-touch-icon-precomposed', 'apple-touch-icon'],
 		getStoreLink: function() {
-			return this.options.url.ios;
+			return 'https://itunes.apple.com/' + this.options.appStoreLanguage + '/app/id' + this.appId;
 		}
 	},
 	android: {
 		appMeta: 'google-play-app',
 		iconRels: ['android-touch-icon', 'apple-touch-icon-precomposed', 'apple-touch-icon'],
 		getStoreLink: function() {
-			return this.options.url.android;
+			return 'http://play.google.com/store/apps/details?id=' + this.appId;
+		}
+	},
+	windows: {
+		appMeta: 'msApplication-ID',
+		iconRels: ['windows-touch-icon', 'apple-touch-icon-precomposed', 'apple-touch-icon'],
+		getStoreLink: function() {
+			return 'http://www.windowsphone.com/s?appid=' + this.appId;
 		}
 	}
 };
 
 var SmartBanner = function(options) {
-	var userAgent = navigator.userAgent;
+	var agent = ua(navigator.userAgent);
 	this.options = extend({}, {
 		daysHidden: 15,
 		daysReminder: 90,
-		appStoreLanguage: 'us', // Language code for App Store
+		appStoreLanguage: userLang, // Language code for App Store
 		button: 'OPEN', // Text for the install button
 		store: {
 			ios: 'On the App Store',
-			android: 'In Google Play'
+			android: 'In Google Play',
+			windows: 'In the Windows Store'
 		},
 		price: {
 			ios: 'FREE',
-			android: 'FREE'
+			android: 'FREE',
+			windows: 'FREE'
 		},
-		force: false // put platform type (ios, android, etc.) here for emulation
+		theme: '', // put platform type ('ios', 'android', etc.) here to force single theme on all device
+		icon: '', // full path to icon image if not using website icon image
+		force: '' // put platform type ('ios', 'android', etc.) here for emulation
 	}, options || {});
 
 	if (this.options.force) {
 		this.type = this.options.force;
-	} else if (userAgent.match(/iPad|iPhone|iPod/i) !== null) {
-		if (userAgent.match(/Safari/i) !== null ||
-				(userAgent.match(/CriOS/i) !== null ||
-				Number(userAgent.substr(userAgent.indexOf('OS ') + 3, 3).replace('_', '.')) < 6)) {
-			this.type = 'ios';
-		} // Check webview and native smart banner support (iOS 6+)
-	} else if (userAgent.match(/Android/i) !== null) {
+	} else if (agent.os.name === 'Windows Phone' || agent.os.name === 'Windows Mobile') {
+		this.type = 'windows';
+	} else if (agent.os.name === 'iOS') {
+		this.type = 'ios';
+	} else if (agent.os.name === 'Android') {
 		this.type = 'android';
 	}
 
-	// Don't show banner if device isn't iOS or Android, website is loaded in app, user dismissed banner, or we have no app id in meta
+	// Don't show banner on ANY of the following conditions:
+	// - device os is not supported,
+	// - user is on mobile safari for ios 6 or greater (iOS >= 6 has native support for SmartAppBanner)
+	// - running on standalone mode
+	// - user dismissed banner
 	if (!this.type
+		|| ( this.type === 'ios' && agent.browser.name === 'Mobile Safari' && parseInt(agent.os.version) >= 6 )
 		|| navigator.standalone
 		|| cookie.get('smartbanner-closed')
 		|| cookie.get('smartbanner-installed')) {
@@ -63,6 +81,7 @@ var SmartBanner = function(options) {
 
 	extend(this, mixins[this.type]);
 
+	// - If we dont have app id in meta, dont display the banner
 	if (!this.parseAppId()) {
 		return;
 	}
@@ -78,17 +97,24 @@ SmartBanner.prototype = {
 		var link = this.getStoreLink();
 		var inStore = this.options.price[this.type] + ' - ' + this.options.store[this.type];
 		var icon;
-		for (var i = 0; i < this.iconRels.length; i++) {
-			var rel = q('link[rel="'+this.iconRels[i]+'"]');
-			if (rel) {
-				icon = rel.getAttribute('href');
-				break;
+
+		if (this.options.icon) {
+			icon = this.options.icon;
+		} else {
+			for (var i = 0; i < this.iconRels.length; i++) {
+				var rel = q('link[rel="' + this.iconRels[i] + '"]');
+
+				if (rel) {
+					icon = rel.getAttribute('href');
+					break;
+				}
 			}
 		}
 
 		var sb = doc.createElement('div');
-		sb.className = 'smartbanner smartbanner-' + this.type;
+		var theme = this.options.theme || this.type;
 
+		sb.className = 'smartbanner' + ' smartbanner-' + theme;
 		sb.innerHTML = '<div class="smartbanner-container">' +
 							'<a href="javascript:void(0);" class="smartbanner-close">&times;</a>' +
 							'<span class="smartbanner-icon" style="background-image: url('+icon+')"></span>' +
@@ -103,14 +129,12 @@ SmartBanner.prototype = {
 						'</div>';
 
 		//there isn’t neccessary a body
-		if (doc.querySelector('.body-wrapper')) {
-			doc.querySelector('.body-wrapper').appendChild(sb);
-			doc.body.classList.add('smart-banner');
+		if (doc.body) {
+			doc.body.appendChild(sb);
 		}
 		else if (doc) {
 			doc.addEventListener('DOMContentLoaded', function(){
-				doc.querySelector('.body-wrapper').appendChild(sb);
-				doc.body.classList.add('smart-banner');
+				doc.body.appendChild(sb);
 			});
 		}
 
@@ -126,17 +150,16 @@ SmartBanner.prototype = {
 	},
 	close: function() {
 		this.hide();
-		doc.body.classList.remove('smart-banner');
 		cookie.set('smartbanner-closed', 'true', {
 			path: '/',
-			expires: +new Date() + this.options.daysHidden * 1000 * 60 * 60 * 24
+			expires: new Date(+new Date() + this.options.daysHidden * 1000 * 60 * 60 * 24)
 		});
 	},
 	install: function() {
 		this.hide();
 		cookie.set('smartbanner-installed', 'true', {
 			path: '/',
-			expires: +new Date() + this.options.daysReminder * 1000 * 60 * 60 * 24
+			expires: new Date(+new Date() + this.options.daysReminder * 1000 * 60 * 60 * 24)
 		});
 	},
 	parseAppId: function() {
