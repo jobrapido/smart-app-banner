@@ -141,6 +141,7 @@
             '<span class="smartbanner-icon" style="background-image: url(' + icon + ')"></span>' +
             '<div class="smartbanner-info">' +
             '<div class="smartbanner-title">' + this.options.title + '</div>' +
+            '<div class="smartbanner-description">' + this.options.description + '</div>' +
             '<div>' + this.options.author + '</div>' +
             '<span>' + inStore + '</span>' +
             '</div>' +
