@@ -40,6 +40,7 @@ Based on 'jQuery Smart Banner' by Arnold Daniels <arnold@jasny.net> https://gith
           daysReminder: 90, // days to hide banner after "VIEW" button is clicked (defaults to 90)
           appStoreLanguage: 'us', // language code for the App Store (defaults to us)
           title: 'MyPage',
+          description: 'Description',
           author: 'MyCompany LLC',
           button: 'VIEW',
           store: {
