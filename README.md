@@ -52,7 +52,8 @@ Based on 'jQuery Smart Banner' by Arnold Daniels <arnold@jasny.net> https://gith
               ios: 'FREE',
               android: 'FREE',
               windows: 'FREE'
-          }
+          },
+          icon: 'path/to/icon'
           // , force: 'ios' // Uncomment for platform emulation
       });
     </script>
